@@ -1,0 +1,32 @@
+## User File Management Reports
+# Bilgisayarın ve editörün ürettiği derleme dosyaları
+
+# .NET Core / .NET Standard core artifact'leri
+bin/
+obj/
+
+# Visual Studio build ve cache klasörleri
+.vs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# VS Code klasörleri ve ayarları
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# İşletim sistemi kalıntıları
+Thumbs.db
+.DS_Store
+
+# Log ve test çıktıları (arkadaşın logları localde test ederken GitHub'ı kirletmesin)
+*.log
+*.csv
+*.json
