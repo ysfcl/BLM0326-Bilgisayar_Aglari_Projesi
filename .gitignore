@@ -29,4 +29,4 @@ Thumbs.db
 # Log ve test çıktıları (arkadaşın logları localde test ederken GitHub'ı kirletmesin)
 *.log
 *.csv
-*.json
+*.log.json

@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Netprobe.Client/Netprobe.Client.csproj" />
+  <Project Path="Netprobe.Common/Netprobe.Common.csproj" />
+  <Project Path="Netprobe.Server/Netprobe.Server.csproj" />
+</Solution>
