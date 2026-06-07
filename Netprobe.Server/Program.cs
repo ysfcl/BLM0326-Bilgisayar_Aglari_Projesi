@@ -134,7 +134,7 @@ static async Task AcceptTransferAsync(UdpClient udp)
         }
     }
 
-    // ── 4. Bütünlük kontrolü ─────────────────────────────────────────
+    //---------- 4. Bütünlük kontrolü ---------------------------
     var receivedHash = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(outputPath)));
     Console.WriteLine($"\n[SERVER] Dosya yazıldı: {outputPath}");
     Console.WriteLine($"[SERVER] SHA256: {receivedHash}");
