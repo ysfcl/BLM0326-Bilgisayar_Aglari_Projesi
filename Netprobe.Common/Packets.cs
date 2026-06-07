@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace NetProbe.Common;  
+namespace Netprobe.Common;  
 // Datapacket, InitPacket, AckPacket gibi yapılar 
 //UDP sadece byte taşımaktadır, burada yapılan şey taşınan byte'a anlam katılmasıdır. 
 
@@ -23,7 +23,7 @@ public sealed class DataPacket
     public uint SequenceNum{get;init;}
     public uint TotalPackets{get;init;}
     public byte [] Payload{get;init;}=Array.Empty<byte>();
-    public byte[] Checksum{get;private set;}=Array.Empty<byte>();
+    public byte[] Checksum{get;private set;}
 
     
     // SHA-256 checksum hesapla
@@ -41,28 +41,27 @@ public sealed class DataPacket
 
     public byte [] Serialize()
 {
-    ComputeChecksum();
-
-    int totalLen=1+4+4+4+Payload.Length;
-    var buff=new byte[totalLen];
-    int pos=0;
-
-    buff[pos++]=(byte)Type;
-    BitConverter.GetBytes(SequenceNum).CopyTo(buff,pos);
-    pos+=4;
+     ComputeChecksum();
     
-    BitConverter.GetBytes(TotalPackets).CopyTo(buff,pos);
-    pos+=4;
-    
-    BitConverter.GetBytes(Payload.Length).CopyTo(buff,pos);
-    pos+=4;
-    
-    Checksum.CopyTo(buff,pos);
-    pos+=32;
-   
-    Payload.CopyTo(buff,pos);
+    int totalLen = 1 + 4 + 4 + 4 + 32 + Payload.Length;
+    var buf = new byte[totalLen];
+    int pos = 0;
 
-    return buff;
+    buf[pos++] = (byte)Type;
+    BitConverter.GetBytes(SequenceNum).CopyTo(buf, pos);   
+    pos += 4;
+    BitConverter.GetBytes(TotalPackets).CopyTo(buf, pos);  
+    pos += 4;
+    BitConverter.GetBytes(Payload.Length).CopyTo(buf, pos);
+    pos += 4;
+    
+    if (Checksum != null && Checksum.Length == 32)
+        Checksum.CopyTo(buf, pos);
+    
+    pos += 32;
+    Payload.CopyTo(buf, pos);
+
+    return buf;
 }
 
 //Byte dizisi C# nesnesine çevrilir

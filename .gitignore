@@ -26,7 +26,11 @@ bld/
 Thumbs.db
 .DS_Store
 
-# Log ve test çıktıları (arkadaşın logları localde test ederken GitHub'ı kirletmesin)
+# Log ve test çıktıları - bu dosyalar genellikle büyük ve geçici olduğundan versiyon kontrolüne dahil edilmez   
 *.log
 *.csv
 *.log.json
+
+# Test ve demo çıktıları
+received/
+demo/
