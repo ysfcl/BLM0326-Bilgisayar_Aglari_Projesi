@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using Netprobe.Common;
@@ -44,6 +44,9 @@ static async Task SendFileAsync(
     string filePath, string host, int serverPort,
     int payloadSize, int timeoutMs, double lossRate)
 {
+    var logPath = $"client_log_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+    using var logger = new CsvLogger(logPath);
+
     var fileBytes   = File.ReadAllBytes(filePath);
     var fileHash    = Convert.ToHexString(SHA256.HashData(fileBytes));
     var totalPkts   = (uint)Math.Ceiling((double)fileBytes.Length / payloadSize);
@@ -101,7 +104,7 @@ static async Task SendFileAsync(
 
         while (!acked && retransmits <= ProtocolConfig.MaxRetransmissions)
         {
-            // Yapay kayıp simülasyonu
+    
             if (lossRate > 0 && rng.NextDouble() < lossRate)
             {
                 Console.WriteLine($"[CLIENT] [SIMULATED LOSS] #{seq}");
@@ -112,6 +115,9 @@ static async Task SendFileAsync(
                 var bytes = pkt.Serialize();
                 await udp.SendAsync(bytes);
                 stats.SentPackets++;
+                
+                
+                logger.Log(EventKind.PacketSent, seq, $"size={bytes.Length}"); 
             }
 
             var ackResult = await WaitForAckAsync(udp, seq, timeoutMs);
@@ -121,9 +127,15 @@ static async Task SendFileAsync(
                 acked = true;
                 stats.AckedPackets++;
                 Console.WriteLine($"[CLIENT] ✓ #{seq}/{totalPkts - 1}  ({len} byte)");
+                
+                
+                logger.Log(EventKind.AckReceived, seq); 
             }
             else
             {
+                
+                logger.Log(EventKind.Timeout, seq); 
+                
                 retransmits++;
                 stats.TimeoutCount++;
 
@@ -131,6 +143,8 @@ static async Task SendFileAsync(
                 {
                     stats.RetransmitCount++;
                     Console.WriteLine($"[CLIENT] ⟳ #{seq} timeout — retransmit {retransmits}/{ProtocolConfig.MaxRetransmissions}");
+                    
+                    logger.Log(EventKind.Retransmission, seq); 
                 }
             }
         }
